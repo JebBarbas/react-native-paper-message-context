@@ -1,0 +1,40 @@
+{
+  "name": "react-native-paper-message-context",
+  "version": "1.0.0",
+  "description": "Uses react-native-paper to show messages (in form of dialog or snack) in an easy n fast form. (includes predefined styles and configuration)",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "node dist/test.js",
+    "build": "tsc",
+    "release": "standard-version",
+    "share": "git push --follow-tags origin main && npm publish"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JebBarbas/react-native-paper-message-context.git"
+  },
+  "keywords": [],
+  "author": "jebbarbas",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JebBarbas/react-native-paper-message-context/issues"
+  },
+  "homepage": "https://github.com/JebBarbas/react-native-paper-message-context#readme",
+  "devDependencies": {
+    "@types/react": "^17.0.19",
+    "@types/react-native": "^0.64.13",
+    "@typescript-eslint/eslint-plugin": "^4.29.3",
+    "@typescript-eslint/parser": "^4.29.3",
+    "eslint": "^7.32.0",
+    "eslint-plugin-react": "^7.24.0",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "react": "^17.0.2",
+    "react-native": "^0.65.1",
+    "react-native-paper": "^4.9.2",
+    "standard-version": "^9.3.1",
+    "typescript": "^4.4.2"
+  },
+  "dependencies": {
+    "jebcolors": "^2.5.0"
+  }
+}
