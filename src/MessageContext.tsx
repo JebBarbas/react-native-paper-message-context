@@ -14,19 +14,26 @@ import {
 import { bootstrapMainColors,  bootstrapUnusedColors, isDarkColor} from 'jebcolors'
 
 // Types START
-type SnackOptions = {
-    large?: boolean,
+interface BaseOptions {
     color?: string,
     label?: string
 }
 
-type DialogOptons = {
+interface SnackOptions extends BaseOptions {
+    large?: boolean,
+}
+
+interface DialogOptons extends BaseOptions {
     static?: boolean,
-    color?: string,
-    label?: string
 }
 
 type MessageOptions = SnackOptions | DialogOptons
+
+type Callback = () => void
+
+interface AskOptions extends Omit<DialogOptons,'label'> {
+    label?: string[]
+}
 
 type ContextValue = {
     showSnack: (text: string, options?: SnackOptions) => void;
@@ -34,6 +41,7 @@ type ContextValue = {
     showMessage: (text: string, options: MessageOptions) => void;
     useSnackForMessages: () => void;
     useDialogForMessages: () => void;
+    ask: (text:string, onYes:Callback, onNo?:Callback, options?:AskOptions) => void;
 }
 // Types END
 
@@ -42,8 +50,9 @@ const messageContextDefaultValue:ContextValue = {
     showSnack: (text:string, options?:SnackOptions) => {text; options},
     showDialog: (text:string, options?:DialogOptons) => {text; options},
     showMessage: (text:string, options?:MessageOptions) => {text; options},
-    useSnackForMessages: () => {0},
-    useDialogForMessages: () => {0},
+    useSnackForMessages: () => {null},
+    useDialogForMessages: () => {null},
+    ask: (text:string, onYes:Callback, onNo?:Callback, options?:AskOptions) => {text;onYes;onNo;options},
 }
 
 const MessageContext = createContext(messageContextDefaultValue)
@@ -150,6 +159,38 @@ export const MessageProvider:FC = ({children}) => {
     const useDialogForMessages = () => setUseSFM(false)
     // Show Message End //
 
+    // Dialog Ask Start //
+    const [askVisible, setAskVisible] = useState(false)
+    const [askText, setAskText] = useState('Default Message')
+    const [askStatic, setAskStatic] = useState(false)
+    const [askBackgroundColor, setAskBackgroundColor] = useState<string|undefined>()
+    const [askButtonColor, setAskButtonColor] = useState<string|undefined>()
+    const [askButtonsText, setAskButtonsText] = useState(['NO','YES'])
+    const [askYesFunction, setAskYesFunction] = useState<Callback|undefined>()
+    const [askNoFunction, setAskNoFunction] = useState<Callback|undefined>()
+
+    const openAsk = () => setAskVisible(true)
+    const closeAsk = () => setAskVisible(false)
+    const ask = (text:string, onYes:Callback, onNo?:Callback, options?:AskOptions) => {
+        text = text ?? 'Message'
+        onYes = onYes ?? (() => {null})
+        onNo = onNo ?? closeAsk
+
+        const _static = options?.static ? true : false
+        const color = options?.color ?? 'default'
+        const label = options?.label ?? ['NO','YES']
+
+        setAskText(text.toString())
+        setAskStatic(_static)
+        setAskBackgroundColor(getBackgroundColor(color))
+        setAskButtonColor(getButtonColor(color))
+        setAskButtonsText(label)
+        setAskYesFunction(onYes)
+        setAskNoFunction(onNo)
+        openAsk()
+    }
+    // Dialog Ask End //
+
     // Provider Start
     const value = {
         showSnack,
@@ -157,6 +198,7 @@ export const MessageProvider:FC = ({children}) => {
         showMessage,
         useSnackForMessages,
         useDialogForMessages,
+        ask,
     }
     // Provider End
 
@@ -196,6 +238,35 @@ export const MessageProvider:FC = ({children}) => {
                             onPress={closeDialog}
                         >
                             {dialogButtonText}
+                        </Button>
+                    </Dialog.Actions>
+                </Dialog>
+            </Portal>
+
+            <Portal>
+                <Dialog 
+                    visible={askVisible} 
+                    onDismiss={askNoFunction} 
+                    dismissable={!askStatic} 
+                    style={{backgroundColor: askBackgroundColor}}
+                >
+                    <Dialog.Title>
+                        <Text style={{color: askButtonColor}}>
+                            {askText}
+                        </Text>
+                    </Dialog.Title>
+                    <Dialog.Actions>
+                        <Button 
+                            color={askButtonColor} 
+                            onPress={askNoFunction}
+                        >
+                            {askButtonsText[0]}
+                        </Button>
+                        <Button 
+                            color={askButtonColor} 
+                            onPress={askYesFunction}
+                        >
+                            {askButtonsText[1]}
                         </Button>
                     </Dialog.Actions>
                 </Dialog>

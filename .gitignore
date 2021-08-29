@@ -1,1 +1,4 @@
 node_modules/
+
+# This is to test the context
+src/App.tsx

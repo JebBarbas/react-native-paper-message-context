@@ -132,3 +132,33 @@ const CustomComponent = () => {
 
 export default CustomComponent
 ```
+
+## Usage - Ask Dialog
+In version 1.1.0+, there's a new dialog used to make actions if the yes button is pressed, its called `Ask`.
+
+```jsx
+// ...
+
+const CustomComponent = () => {
+    const {ask, showMessage} = useMessage()
+
+    const hackNASA = () => {
+        showMessage('NASA Hacked',{color:'success'})
+    }
+
+    const askToLog = () => {
+        ask('Are you sure you wanna hack the NASA?',hackNASA,undefined,{
+            color:'warning',
+            label:['NEVER','YES PLEASE']
+        })
+    }
+
+    return (
+        <View>
+            <Button onPress={askToLog}>start hack</Button>
+        </View>
+    )
+}
+
+export default CustomComponent
+```
