@@ -1,6 +1,15 @@
 # react-native-paper-message-context
 Uses react-native-paper to show messages (in form of dialog or snack) in an easy n fast form. (includes predefined styles and configuration)
 
+---
+
+![Travis (.com)](https://img.shields.io/travis/com/jebbarbas/react-native-paper-message-context)
+![David](https://img.shields.io/david/jebbarbas/react-native-paper-message-context)
+![npm](https://img.shields.io/npm/dt/react-native-paper-message-context)
+![NPM](https://img.shields.io/npm/l/react-native-paper-message-context)
+![npm](https://img.shields.io/npm/v/react-native-paper-message-context)
+![GitHub top language](https://img.shields.io/github/languages/top/jebbarbas/react-native-paper-message-context)
+
 ## Dependencies
 This module needs to have instaled
 - react
@@ -9,7 +18,9 @@ This module needs to have instaled
 
 ## Instalation
 Just run in your console
-`npm i react-native-paper-message-context`
+```
+npm i react-native-paper-message-context
+```
 
 ## Usage - Principal
 To use first import the `MessageProvider` inside your `PaperProvider`. If you want to handle dinamic DarkTheme
@@ -59,7 +70,7 @@ You can customize a little your messages with the optional parameter `options`:
 - static: When using dialog, if you click outside, it will be dissmissed, but if `static` is true, this will not 
 happen (dialog) (default is `false`).
 - color: The background color of the dialog or the snack, can recieve a color in format #RGB or #RRGGBB or some 
-of the next predefined colors: 'success', 'error', 'warning' or 'info' (snack and dialog) (default is `null`, uses
+of the next predefined colors: 'success', 'error', 'warning' or 'info' (snack and dialog) (default is `undefined`, uses
 the PaperProvider primary color).
 - label: The text of the button of the snack of dialog (snack and dialog) (default is `'OK'`).
 
