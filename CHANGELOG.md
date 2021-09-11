@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/JebBarbas/react-native-paper-message-context/compare/v1.1.0...v1.2.0) (2021-09-11)
+
+
+### Features
+
+* Now you can add CSS color names in color option. ([8a47584](https://github.com/JebBarbas/react-native-paper-message-context/commit/8a475847d71ac9a56c03ad35ee5b81aea36c8e4a))
+
 ## [1.1.0](https://github.com/JebBarbas/react-native-paper-message-context/compare/v1.0.2...v1.1.0) (2021-08-29)
 
 
