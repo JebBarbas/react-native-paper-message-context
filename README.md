@@ -16,6 +16,11 @@ This module needs to have instaled
 - react-native
 - react-native-paper
 
+## react-native-paper
+This module uses components from `react-native-paper`, so if you found a visual bug (like a snackbar that shows on top
+of the screen) instead of a possible message-context bug (like a dialog not showing the correct color), but that 
+issue also in `react-native-paper`.
+
 ## Instalation
 Just run in your console
 ```
@@ -71,7 +76,7 @@ You can customize a little your messages with the optional parameter `options`:
 happen (dialog) (default is `false`).
 - color: The background color of the dialog or the snack, can recieve a color in format #RGB or #RRGGBB or some 
 of the next predefined colors: 'success', 'error', 'warning' or 'info' (snack and dialog) (default is `undefined`, uses
-the PaperProvider primary color).
+the PaperProvider primary color). In versions 1.2.0+ it can also CSS color names like 'red', 'hotpink' or 'gold'.
 - label: The text of the button of the snack of dialog (snack and dialog) (default is `'OK'`).
 
 ## Usage - Snack or Dialog?

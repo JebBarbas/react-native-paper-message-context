@@ -11,7 +11,7 @@ import {
     Button, 
     Text
 } from 'react-native-paper'
-import { bootstrapMainColors,  bootstrapUnusedColors, isDarkColor} from 'jebcolors'
+import { bootstrapMainColors,  bootstrapUnusedColors, supercolor, Color} from 'jebcolors'
 
 // Types START
 interface BaseOptions {
@@ -64,28 +64,15 @@ export const MessageProvider:FC = ({children}) => {
     // SFM means "Snack For Message" and stores if you want to use the snack when using showMessage (default is false so the dialog is used)
     const [useSFM, setUseSFM] = useState(false)
 
-    const getBackgroundColor = (color?:string) => {
+    const getSupercolor = (color?:string):Color|undefined => {
         if(!color) return undefined
         switch(color){
-            case 'success': return bootstrapMainColors.success
-            case 'error': return bootstrapMainColors.danger
-            case 'warning': return bootstrapMainColors.warning
-            case 'info': return bootstrapMainColors.info
+            case 'success': return supercolor(bootstrapMainColors.success)
+            case 'error': return supercolor(bootstrapMainColors.danger)
+            case 'warning': return supercolor(bootstrapMainColors.warning)
+            case 'info': return supercolor(bootstrapMainColors.info)
             case 'default': return undefined
-            default: return color
-        }
-    }
-
-    const getButtonColor = (color?:string) => {
-        if(!color) return undefined
-        const {white, black} = bootstrapUnusedColors
-        switch(color){
-            case 'success': return white
-            case 'error': return white
-            case 'warning': return black
-            case 'info': return black
-            case 'default': return undefined
-            default: return isDarkColor(color) ? white : black
+            default: return supercolor(color)
         }
     }
     // General End //
@@ -107,13 +94,13 @@ export const MessageProvider:FC = ({children}) => {
         text = text ?? 'Default Message'
 
         const large = options?.large ? true : false
-        const color = options?.color ?? 'default'
+        const color = getSupercolor(options?.color ?? 'default')
         const label = options?.label ?? 'OK'
 
         setSnackText(text.toString())
         setSnackDuration(large ? SNACK_LARGE : SNACK_SHORT)
-        setSnackBackgroundColor(getBackgroundColor(color))
-        setSnackButtonColor(getButtonColor(color))
+        setSnackBackgroundColor(color?.code)
+        setSnackButtonColor(color?.text)
         setSnackButtonText(label)
         openSnack()
     }
@@ -133,13 +120,13 @@ export const MessageProvider:FC = ({children}) => {
         text = text ?? 'Message'
 
         const _static = options?.static ? true : false
-        const color = options?.color ?? 'default'
+        const color = getSupercolor(options?.color ?? 'default')
         const label = options?.label ?? 'OK'
 
         setDialogText(text.toString())
         setDialogStatic(_static)
-        setDialogBackgroundColor(getBackgroundColor(color))
-        setDialogButtonColor(getButtonColor(color))
+        setDialogBackgroundColor(color?.code)
+        setDialogButtonColor(color?.text)
         setDialogButtonText(label)
         openDialog()
     }
@@ -177,13 +164,13 @@ export const MessageProvider:FC = ({children}) => {
         onNo = onNo ?? closeAsk
 
         const _static = options?.static ? true : false
-        const color = options?.color ?? 'default'
+        const color = getSupercolor(options?.color ?? 'default')
         const label = options?.label ?? ['NO','YES']
 
         setAskText(text.toString())
         setAskStatic(_static)
-        setAskBackgroundColor(getBackgroundColor(color))
-        setAskButtonColor(getButtonColor(color))
+        setAskBackgroundColor(color?.code)
+        setAskButtonColor(color?.text)
         setAskButtonsText(label)
         setAskYesFunction(onYes)
         setAskNoFunction(onNo)

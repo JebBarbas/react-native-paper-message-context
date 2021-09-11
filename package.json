@@ -43,6 +43,6 @@
     "typescript": "^4.4.2"
   },
   "dependencies": {
-    "jebcolors": "^2.5.0"
+    "jebcolors": "^3.0.0"
   }
 }
