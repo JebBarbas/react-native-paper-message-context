@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.2.1-alpha.0](https://github.com/JebBarbas/react-native-paper-message-context/compare/v1.2.0...v1.2.1-alpha.0) (2021-09-17)
+
+
+### Bug Fixes
+
+* Trying to fix ask function, onYes runs without ask ([e826250](https://github.com/JebBarbas/react-native-paper-message-context/commit/e8262503fceb2dd4afc274bb8c06fcd97d1ae6d9))
+
 ## [1.2.0](https://github.com/JebBarbas/react-native-paper-message-context/compare/v1.1.0...v1.2.0) (2021-09-11)
 
 
