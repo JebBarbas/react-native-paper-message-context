@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.2.2](https://github.com/JebBarbas/react-native-paper-message-context/compare/v1.2.1...v1.2.2) (2021-09-17)
+
+
+### Bug Fixes
+
+* Removed console.logs to debug 🔥 ([bf75bff](https://github.com/JebBarbas/react-native-paper-message-context/commit/bf75bfff4d301b11734c6de80a797e961eaf5bd5))
+
 ### [1.2.1](https://github.com/JebBarbas/react-native-paper-message-context/compare/v1.2.1-alpha.1...v1.2.1) (2021-09-17)
 
 
