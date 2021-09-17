@@ -1,6 +1,6 @@
 {
   "name": "react-native-paper-message-context",
-  "version": "1.2.1-alpha.1",
+  "version": "1.2.1",
   "description": "Uses react-native-paper to show messages (in form of dialog or snack) in an easy n fast form. (includes predefined styles and configuration)",
   "main": "dist/index.js",
   "scripts": {

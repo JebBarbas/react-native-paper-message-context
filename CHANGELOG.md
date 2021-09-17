@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.2.1](https://github.com/JebBarbas/react-native-paper-message-context/compare/v1.2.1-alpha.1...v1.2.1) (2021-09-17)
+
+
+### Bug Fixes
+
+* Fixed useState in ask function 🔥 ([6239c3b](https://github.com/JebBarbas/react-native-paper-message-context/commit/6239c3b7b5234f42b1bb3d5bac4de4f24d0bec63))
+
 ### [1.2.1-alpha.1](https://github.com/JebBarbas/react-native-paper-message-context/compare/v1.2.1-alpha.0...v1.2.1-alpha.1) (2021-09-17)
 
 
