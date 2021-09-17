@@ -161,32 +161,49 @@ export const MessageProvider:FC = ({children}) => {
     const openAsk = useCallback(() => setAskVisible(true),[])
     const closeAsk = useCallback(() => setAskVisible(false),[])
     const ask = useCallback((text:string, onYes:Callback, onNo?:Callback, options?:AskOptions) => {
+        console.log('Entro a ask')
+        
         text = text ?? 'Message'
         
         if(typeof onYes === 'function'){
+            console.log('onYes es funcion')
             setAskYesFunction(() => {onYes(); closeAsk()})
+            console.log('Ahora setAskYes esta puesto')
         }
         else{
+            console.log('onYes no es funcion')
             setAskYesFunction(closeAsk)
+            console.log('askYesFunction es close')
         }
 
         if(typeof onNo === 'function'){
+            console.log('onNo es funcion')
             setAskNoFunction(() => {onNo(); closeAsk()})
+            console.log('Ahora askNoFunction esta puesto')
         }
         else{
+            console.log('onNo no es funcion')
             setAskNoFunction(closeAsk)
+            console.log('Ahora setAskNo esta puesto')
         }
 
+        console.log('Empiezo a poner')
         const _static = options?.static ? true : false
         const color = getSupercolor(options?.color ?? 'default')
         const label = options?.label ?? ['NO','YES']
+        console.log('Termine de poner')
 
+        console.log('Empiezo a cambiar estado')
         setAskText(text.toString())
         setAskStatic(_static)
         setAskBackgroundColor(color?.code)
         setAskButtonColor(color?.text)
         setAskButtonsText(label)
+        console.log('Termino el estado')
+
+        console.log('Abro')
         openAsk()
+        console.log('Despues de abrir')
     },[closeAsk, getSupercolor, openAsk])
     // Dialog Ask End //
 
