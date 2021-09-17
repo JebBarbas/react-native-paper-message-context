@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useCallback, useMemo } from 'react';
 import { Snackbar, Portal, Dialog, Button, Text } from 'react-native-paper';
 import { bootstrapMainColors, supercolor } from 'jebcolors';
 // Types END
@@ -17,7 +17,7 @@ export const MessageProvider = ({ children }) => {
     // General Start //
     // SFM means "Snack For Message" and stores if you want to use the snack when using showMessage (default is false so the dialog is used)
     const [useSFM, setUseSFM] = useState(false);
-    const getSupercolor = (color) => {
+    const getSupercolor = useCallback((color) => {
         if (!color)
             return undefined;
         switch (color) {
@@ -28,20 +28,20 @@ export const MessageProvider = ({ children }) => {
             case 'default': return undefined;
             default: return supercolor(color);
         }
-    };
+    }, []);
     // General End //
     // Snack Message Start //
-    const SNACK_LARGE = 7000;
-    const SNACK_SHORT = 2500;
+    const SNACK_LARGE = useMemo(() => 7000, []);
+    const SNACK_SHORT = useMemo(() => 2500, []);
     const [snackVisible, setSnackVisible] = useState(false);
     const [snackText, setSnackText] = useState('Default Message');
     const [snackDuration, setSnackDuration] = useState(SNACK_SHORT);
     const [snackBackgroundColor, setSnackBackgroundColor] = useState();
     const [snackButtonColor, setSnackButtonColor] = useState();
     const [snackButtonText, setSnackButtonText] = useState('OK');
-    const openSnack = () => setSnackVisible(true);
-    const closeSnack = () => setSnackVisible(false);
-    const showSnack = (text, options) => {
+    const openSnack = useCallback(() => setSnackVisible(true), []);
+    const closeSnack = useCallback(() => setSnackVisible(false), []);
+    const showSnack = useCallback((text, options) => {
         text = text ?? 'Default Message';
         const large = options?.large ? true : false;
         const color = getSupercolor(options?.color ?? 'default');
@@ -52,7 +52,7 @@ export const MessageProvider = ({ children }) => {
         setSnackButtonColor(color?.text);
         setSnackButtonText(label);
         openSnack();
-    };
+    }, [SNACK_LARGE, SNACK_SHORT, getSupercolor, openSnack]);
     // Snack Message End //
     // Dialog Message Start //
     const [dialogVisible, setDialogVisible] = useState(false);
@@ -61,9 +61,9 @@ export const MessageProvider = ({ children }) => {
     const [dialogBackgroundColor, setDialogBackgroundColor] = useState();
     const [dialogButtonColor, setDialogButtonColor] = useState();
     const [dialogButtonText, setDialogButtonText] = useState('OK');
-    const openDialog = () => setDialogVisible(true);
-    const closeDialog = () => setDialogVisible(false);
-    const showDialog = (text, options) => {
+    const openDialog = useCallback(() => setDialogVisible(true), []);
+    const closeDialog = useCallback(() => setDialogVisible(false), []);
+    const showDialog = useCallback((text, options) => {
         text = text ?? 'Message';
         const _static = options?.static ? true : false;
         const color = getSupercolor(options?.color ?? 'default');
@@ -74,19 +74,19 @@ export const MessageProvider = ({ children }) => {
         setDialogButtonColor(color?.text);
         setDialogButtonText(label);
         openDialog();
-    };
+    }, [getSupercolor, openDialog]);
     // Dialog Message End //
     // Show Message Start //
-    const showMessage = (text, options) => {
+    const showMessage = useCallback((text, options) => {
         if (useSFM) {
             showSnack(text, options);
         }
         else {
             showDialog(text, options);
         }
-    };
-    const useSnackForMessages = () => setUseSFM(true);
-    const useDialogForMessages = () => setUseSFM(false);
+    }, [showDialog, showSnack, useSFM]);
+    const useSnackForMessages = useCallback(() => setUseSFM(true), []);
+    const useDialogForMessages = useCallback(() => setUseSFM(false), []);
     // Show Message End //
     // Dialog Ask Start //
     const [askVisible, setAskVisible] = useState(false);
@@ -97,12 +97,22 @@ export const MessageProvider = ({ children }) => {
     const [askButtonsText, setAskButtonsText] = useState(['NO', 'YES']);
     const [askYesFunction, setAskYesFunction] = useState();
     const [askNoFunction, setAskNoFunction] = useState();
-    const openAsk = () => setAskVisible(true);
-    const closeAsk = () => setAskVisible(false);
-    const ask = (text, onYes, onNo, options) => {
+    const openAsk = useCallback(() => setAskVisible(true), []);
+    const closeAsk = useCallback(() => setAskVisible(false), []);
+    const ask = useCallback((text, onYes, onNo, options) => {
         text = text ?? 'Message';
-        onYes = onYes ?? (() => { null; });
-        onNo = onNo ?? closeAsk;
+        if (typeof onYes === 'function') {
+            setAskYesFunction(() => { onYes(); closeAsk(); });
+        }
+        else {
+            setAskYesFunction(closeAsk);
+        }
+        if (typeof onNo === 'function') {
+            setAskNoFunction(() => { onNo(); closeAsk(); });
+        }
+        else {
+            setAskNoFunction(closeAsk);
+        }
         const _static = options?.static ? true : false;
         const color = getSupercolor(options?.color ?? 'default');
         const label = options?.label ?? ['NO', 'YES'];
@@ -111,20 +121,18 @@ export const MessageProvider = ({ children }) => {
         setAskBackgroundColor(color?.code);
         setAskButtonColor(color?.text);
         setAskButtonsText(label);
-        setAskYesFunction(onYes);
-        setAskNoFunction(onNo);
         openAsk();
-    };
+    }, [closeAsk, getSupercolor, openAsk]);
     // Dialog Ask End //
     // Provider Start
-    const value = {
+    const value = useMemo(() => ({
         showSnack,
         showDialog,
         showMessage,
         useSnackForMessages,
         useDialogForMessages,
         ask,
-    };
+    }), [ask, showDialog, showMessage, showSnack, useDialogForMessages, useSnackForMessages]);
     // Provider End
     return (React.createElement(MessageContext.Provider, { value: value },
         children,
@@ -141,7 +149,7 @@ export const MessageProvider = ({ children }) => {
                 React.createElement(Dialog.Actions, null,
                     React.createElement(Button, { color: dialogButtonColor, onPress: closeDialog }, dialogButtonText)))),
         React.createElement(Portal, null,
-            React.createElement(Dialog, { visible: askVisible, onDismiss: askNoFunction, dismissable: !askStatic, style: { backgroundColor: askBackgroundColor } },
+            React.createElement(Dialog, { visible: askVisible, onDismiss: closeAsk, dismissable: !askStatic, style: { backgroundColor: askBackgroundColor } },
                 React.createElement(Dialog.Title, null,
                     React.createElement(Text, { style: { color: askButtonColor } }, askText)),
                 React.createElement(Dialog.Actions, null,

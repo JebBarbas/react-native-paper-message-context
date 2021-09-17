@@ -2,7 +2,9 @@ import React, {
     FC, 
     createContext, 
     useContext, 
-    useState
+    useState,
+    useCallback,
+    useMemo
 } from 'react'
 import { 
     Snackbar, 
@@ -11,7 +13,7 @@ import {
     Button, 
     Text
 } from 'react-native-paper'
-import { bootstrapMainColors,  bootstrapUnusedColors, supercolor, Color} from 'jebcolors'
+import { bootstrapMainColors, supercolor, Color} from 'jebcolors'
 
 // Types START
 interface BaseOptions {
@@ -64,7 +66,7 @@ export const MessageProvider:FC = ({children}) => {
     // SFM means "Snack For Message" and stores if you want to use the snack when using showMessage (default is false so the dialog is used)
     const [useSFM, setUseSFM] = useState(false)
 
-    const getSupercolor = (color?:string):Color|undefined => {
+    const getSupercolor = useCallback((color?:string):Color|undefined => {
         if(!color) return undefined
         switch(color){
             case 'success': return supercolor(bootstrapMainColors.success)
@@ -74,12 +76,12 @@ export const MessageProvider:FC = ({children}) => {
             case 'default': return undefined
             default: return supercolor(color)
         }
-    }
+    },[])
     // General End //
 
     // Snack Message Start //
-    const SNACK_LARGE = 7000
-    const SNACK_SHORT = 2500
+    const SNACK_LARGE = useMemo(() => 7000, [])
+    const SNACK_SHORT = useMemo(() => 2500, [])
 
     const [snackVisible, setSnackVisible] = useState(false)
     const [snackText, setSnackText] = useState('Default Message')
@@ -88,9 +90,9 @@ export const MessageProvider:FC = ({children}) => {
     const [snackButtonColor, setSnackButtonColor] = useState<string|undefined>()
     const [snackButtonText, setSnackButtonText] = useState('OK')
 
-    const openSnack = () => setSnackVisible(true)
-    const closeSnack = () => setSnackVisible(false)
-    const showSnack = (text:string, options?:SnackOptions) => {
+    const openSnack = useCallback(() => setSnackVisible(true),[])
+    const closeSnack = useCallback(() => setSnackVisible(false),[])
+    const showSnack = useCallback((text:string, options?:SnackOptions) => {
         text = text ?? 'Default Message'
 
         const large = options?.large ? true : false
@@ -103,7 +105,7 @@ export const MessageProvider:FC = ({children}) => {
         setSnackButtonColor(color?.text)
         setSnackButtonText(label)
         openSnack()
-    }
+    },[SNACK_LARGE, SNACK_SHORT, getSupercolor, openSnack])
     // Snack Message End //
 
     // Dialog Message Start //
@@ -114,9 +116,9 @@ export const MessageProvider:FC = ({children}) => {
     const [dialogButtonColor, setDialogButtonColor] = useState<string|undefined>()
     const [dialogButtonText, setDialogButtonText] = useState('OK')
 
-    const openDialog = () => setDialogVisible(true)
-    const closeDialog = () => setDialogVisible(false)
-    const showDialog = (text:string, options?:DialogOptons) => {
+    const openDialog = useCallback(() => setDialogVisible(true),[])
+    const closeDialog = useCallback(() => setDialogVisible(false),[])
+    const showDialog = useCallback((text:string, options?:DialogOptons) => {
         text = text ?? 'Message'
 
         const _static = options?.static ? true : false
@@ -129,21 +131,21 @@ export const MessageProvider:FC = ({children}) => {
         setDialogButtonColor(color?.text)
         setDialogButtonText(label)
         openDialog()
-    }
+    },[getSupercolor, openDialog])
     // Dialog Message End //
 
     // Show Message Start //
-    const showMessage = (text:string, options:MessageOptions) => {
+    const showMessage = useCallback((text:string, options:MessageOptions) => {
         if(useSFM){
             showSnack(text, options)
         }
         else{
             showDialog(text, options)
         }
-    }
+    },[showDialog, showSnack, useSFM])
 
-    const useSnackForMessages = () => setUseSFM(true)
-    const useDialogForMessages = () => setUseSFM(false)
+    const useSnackForMessages = useCallback(() => setUseSFM(true),[])
+    const useDialogForMessages = useCallback(() => setUseSFM(false),[])
     // Show Message End //
 
     // Dialog Ask Start //
@@ -156,12 +158,24 @@ export const MessageProvider:FC = ({children}) => {
     const [askYesFunction, setAskYesFunction] = useState<Callback|undefined>()
     const [askNoFunction, setAskNoFunction] = useState<Callback|undefined>()
 
-    const openAsk = () => setAskVisible(true)
-    const closeAsk = () => setAskVisible(false)
-    const ask = (text:string, onYes:Callback, onNo?:Callback, options?:AskOptions) => {
+    const openAsk = useCallback(() => setAskVisible(true),[])
+    const closeAsk = useCallback(() => setAskVisible(false),[])
+    const ask = useCallback((text:string, onYes:Callback, onNo?:Callback, options?:AskOptions) => {
         text = text ?? 'Message'
-        onYes = onYes ?? (() => {null})
-        onNo = onNo ?? closeAsk
+        
+        if(typeof onYes === 'function'){
+            setAskYesFunction(() => {onYes(); closeAsk()})
+        }
+        else{
+            setAskYesFunction(closeAsk)
+        }
+
+        if(typeof onNo === 'function'){
+            setAskNoFunction(() => {onNo(); closeAsk()})
+        }
+        else{
+            setAskNoFunction(closeAsk)
+        }
 
         const _static = options?.static ? true : false
         const color = getSupercolor(options?.color ?? 'default')
@@ -172,21 +186,19 @@ export const MessageProvider:FC = ({children}) => {
         setAskBackgroundColor(color?.code)
         setAskButtonColor(color?.text)
         setAskButtonsText(label)
-        setAskYesFunction(onYes)
-        setAskNoFunction(onNo)
         openAsk()
-    }
+    },[closeAsk, getSupercolor, openAsk])
     // Dialog Ask End //
 
     // Provider Start
-    const value = {
+    const value = useMemo(() => ({
         showSnack,
         showDialog,
         showMessage,
         useSnackForMessages,
         useDialogForMessages,
         ask,
-    }
+    }),[ask, showDialog, showMessage, showSnack, useDialogForMessages, useSnackForMessages])
     // Provider End
 
     return (
@@ -233,7 +245,7 @@ export const MessageProvider:FC = ({children}) => {
             <Portal>
                 <Dialog 
                     visible={askVisible} 
-                    onDismiss={askNoFunction} 
+                    onDismiss={closeAsk} 
                     dismissable={!askStatic} 
                     style={{backgroundColor: askBackgroundColor}}
                 >
