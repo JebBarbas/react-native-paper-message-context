@@ -104,22 +104,22 @@ export const MessageProvider = ({ children }) => {
         text = text ?? 'Message';
         if (typeof onYes === 'function') {
             console.log('onYes es funcion');
-            setAskYesFunction(() => { onYes(); closeAsk(); });
+            setAskYesFunction(() => () => { onYes(); closeAsk(); });
             console.log('Ahora setAskYes esta puesto');
         }
         else {
             console.log('onYes no es funcion');
-            setAskYesFunction(closeAsk);
+            setAskYesFunction(() => closeAsk);
             console.log('askYesFunction es close');
         }
         if (typeof onNo === 'function') {
             console.log('onNo es funcion');
-            setAskNoFunction(() => { onNo(); closeAsk(); });
+            setAskNoFunction(() => () => { onNo(); closeAsk(); });
             console.log('Ahora askNoFunction esta puesto');
         }
         else {
             console.log('onNo no es funcion');
-            setAskNoFunction(closeAsk);
+            setAskNoFunction(() => closeAsk);
             console.log('Ahora setAskNo esta puesto');
         }
         console.log('Empiezo a poner');
